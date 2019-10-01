@@ -65,6 +65,7 @@ The purpose of this privately funded rapid prototype project is create a working
 *   GitHub Repo: [https://github.com/CIVICS/AALE-PoC](https://github.com/CIVICS/AALE-PoC) 
     *   Code (Open Source)
     *   Documentation (Creative Commons)
+    *   Public-Facing Project Webpage: [https://civics.github.io/legal-entity-prototype](https://civics.github.io/legal-entity-prototype)
 *   Working Prototype
     *   AWS?
 *   Private Report
