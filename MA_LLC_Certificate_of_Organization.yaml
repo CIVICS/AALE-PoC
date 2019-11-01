@@ -641,17 +641,6 @@ code: |
 	  else:
 	    return ''
 ---
-mandatory: True
-code: |
-  import requests
-  import json
-  define("___authorized", requests.get("https://community.lawyer/docassemble_builder/docassemble_interviews/authorize?id=4647&key=" + str(url_args.get('key'))).json()['authorized'])
----
-mandatory: |
-  not ___authorized
-question: Sorry, you are not authorized to access this page.
-subquestion: Try signing into your account or contacting the App author.
----
 features:
 	debug: True
 	inverse navbar: False
