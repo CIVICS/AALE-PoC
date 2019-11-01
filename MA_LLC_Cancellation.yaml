@@ -1,10 +1,6 @@
 # Prepared by Community.lawyer on 10/1/2019
 # Compatible with Docassemble version 0.5.4
 ---
-modules:
-  - docassemble.base.util
-  - .debug
----
 mandatory: True
 code: |
   from docassemble.base.functions import get_uid
@@ -14,27 +10,7 @@ code: |
 mandatory: True
 code: |
   define("Today", today())
----
-mandatory: True
-code: |
-  import json
-  ___subject_url = url_args.get("subject_url")
-  if (___subject_url):
-    if ("/api/v4/contacts/" in ___subject_url):
-      define("clio_contact_id", ___subject_url.replace("/api/v4/contacts/", ''))
-    elif ("/api/v4/matters/" in ___subject_url):
-      ___matter_id = ___subject_url.replace("/api/v4/matters/", '')
-      define("clio_matter_id", ___matter_id)
 
-      refresh_url = "https://app.clio.com/oauth/token"
-      refresh_data = {'client_id': get_config('clio client id'), 'client_secret': get_config('clio secret key'), 'grant_type': 'refresh_token', 'refresh_token': ''}
-      refresh_response = requests.post(url = refresh_url, data = refresh_data)
-      ___access_token = json.loads(refresh_response.content.decode()).get('access_token')
-      headers = {'Content-Type': 'application/json', 'Authorization': "Bearer %s" %(___access_token)}
-      ___matter_url = "https://app.clio.com/api/v4/matters/%s?fields=client{id,name}" %(___matter_id)
-      ___clio_matters_api_response = requests.get(___matter_url, headers=headers).json().get('data')
-      ___contact_id = ___clio_matters_api_response.get('client').get('id')
-      define("clio_contact_id", ___contact_id)
 ---
 mandatory: True
 code: |
@@ -327,38 +303,6 @@ code: |
       if is_undefined(self) or is_undefined(arg):
         return self
       return augment(self.wrapped.get(arg.wrapped))
-
-    def clio_contacts_dictionary_access(self, contact_id):
-      import json
-      if is_undefined(self) or is_undefined(contact_id):
-        return Undefined()
-      ___refresh_url = "https://app.clio.com/oauth/token"
-      ___refresh_data = {'client_id': get_config('clio client id'), 'client_secret': get_config('clio secret key'), 'grant_type': 'refresh_token', 'refresh_token': ''}
-      ___refresh_response = requests.post(url = ___refresh_url, data = ___refresh_data)
-      ___clio_access_token = json.loads(___refresh_response.content.decode()).get('access_token')
-      ___headers = {'Content-Type': 'application/json', 'Authorization': "Bearer %s" %(___clio_access_token)}
-      ___member_response = requests.get("https://app.clio.com/api/v4/contacts/" + str(primitive_value(contact_id)) + "?" + primitive_value(self).get('url_parameters'), headers=___headers).json().get('data')
-      ___all_field_values = {}
-      ___fields = primitive_value(self).get('fields')
-      for field in ___fields:
-        ___all_field_values.update({ field.get('name'): clio_response_getter(___member_response, field.get('attribute_name'), field.get('sub_attribute_name'), field.get('selector'), field.get('mapped_to_custom_field')) })
-      return augment(___all_field_values)
-
-    def clio_matters_dictionary_access(self, matter_id):
-      import json
-      if is_undefined(self) or is_undefined(matter_id):
-        return Undefined()
-      ___refresh_url = "https://app.clio.com/oauth/token"
-      ___refresh_data = {'client_id': get_config('clio client id'), 'client_secret': get_config('clio secret key'), 'grant_type': 'refresh_token', 'refresh_token': ''}
-      ___refresh_response = requests.post(url = ___refresh_url, data = ___refresh_data)
-      ___clio_access_token = json.loads(___refresh_response.content.decode()).get('access_token')
-      ___headers = {'Content-Type': 'application/json', 'Authorization': "Bearer %s" %(___clio_access_token)}
-      ___member_response = requests.get("https://app.clio.com/api/v4/matters/" + str(primitive_value(matter_id)) + "?" + primitive_value(self).get('url_parameters'), headers=___headers).json().get('data')
-      ___all_field_values = {}
-      ___fields = primitive_value(self).get('fields')
-      for field in ___fields:
-        ___all_field_values.update({ field.get('name'): clio_response_getter(___member_response, field.get('attribute_name'), field.get('sub_attribute_name'), field.get('selector'), field.get('mapped_to_custom_field')) })
-      return augment(___all_field_values)
       
     # date math
     def days_after(self, _arg):
@@ -713,17 +657,6 @@ code: |
 
 	  else:
 	    return ''
----
-mandatory: True
-code: |
-  import requests
-  import json
-  define("___authorized", requests.get("https://community.lawyer/docassemble_builder/docassemble_interviews/authorize?id=4661&key=" + str(url_args.get('key'))).json()['authorized'])
----
-mandatory: |
-  not ___authorized
-question: Sorry, you are not authorized to access this page.
-subquestion: Try signing into your account or contacting the App author.
 ---
 features:
 	debug: True
