@@ -542,24 +542,6 @@ code: |
     except:
       return markdown_string
 
-  def clio_response_getter(response_object, attribute_name, sub_attribute_name, selector, custom_field):
-    if custom_field:
-      ___attribute_object = list(filter(lambda item: (item.get('field_name') == attribute_name), response_object.get('custom_field_values')))
-      if (len(___attribute_object) == 0):
-        return '';
-      return ___attribute_object[0].get('value')
-    elif (selector != ''):
-      ___attribute_object = list(filter(lambda item: (item.get('name') == selector), response_object.get(attribute_name)))
-      if (len(___attribute_object) == 0):
-        return '';
-      return ___attribute_object[0].get(sub_attribute_name)
-    elif (sub_attribute_name != ''):
-      ___attribute_object = response_object.get(attribute_name)
-      if (___attribute_object == None):
-        return ''
-      return ___attribute_object.get(sub_attribute_name)
-    else:
-      return response_object.get(attribute_name) or ''
 ---
 initial: True
 code: |
